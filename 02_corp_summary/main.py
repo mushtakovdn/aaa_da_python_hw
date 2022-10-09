@@ -4,12 +4,16 @@ import csv
 import os
 
 
+# номера столбцов
+DEP_COL_NUM = 1  # департамент
+DIVISION_COL_NUM = 2  # отдел
+SALARY_COL_NUM = 5  # размер зарплаты
+
+
 def parse_data_for_dep_empl_info(dataset: list) -> dict:
     """
     Парсинг сырого датасета, чтобы далее посчитать требуемые агрегации
     """
-    DEP_COL_NUM = 1
-    SALARY_COL_NUM = 5
     parsed_data = {}
 
     for row in dataset:
@@ -92,8 +96,6 @@ def parse_data_for_orgstruct(dataset: list) -> Dict[str, List[str]]:
     Парсит отчет о сотрудниках компании и возвращает словарь
     {'Департамент1': ['Отдел 1', ..., 'Отдел N'], ..., '': ['', ..., '']}
     """
-    DEP_COL_NUM = 1
-    DIVISION_COL_NUM = 2
     parsed_data = {}
 
     for row in dataset:
@@ -122,6 +124,7 @@ def show_org_struct(dataset: list) -> None:
         '|      Деапартамент      |         Отдел          |',
         '+------------------------+------------------------+'
     ]
+    # посмотреть в форматировании как подгонять количества пробелов
     for dep, division in parsed_orgstruct_data.items():
         for i, cur_div in enumerate(division):
             if i == 0:
