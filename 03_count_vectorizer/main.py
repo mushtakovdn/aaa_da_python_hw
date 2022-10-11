@@ -9,7 +9,6 @@ class CountVectorizer:
 
     def __init__(self):
         self._vocabulary = {}
-        self._pointer_of_next_col_num = 0
         self.count_matrix = []
 
     def get_feature_names(self, ):
@@ -21,9 +20,8 @@ class CountVectorizer:
         После обучения на всех документах из обучающего корпуса
         заполняет все промежуточные вектора до полной длины
         """
-        MATRIX_WIDTH = len(self._vocabulary)
         for vector in self.count_matrix:
-            vector_shortage = MATRIX_WIDTH - len(vector)
+            vector_shortage = len(self._vocabulary) - len(vector)
             vector.extend([0 for i in range(vector_shortage)])
 
     def _process_tokens(self, tokens: List[str]) -> Dict[str, int]:
@@ -39,8 +37,7 @@ class CountVectorizer:
         for word in tokens:
             # 1
             if word not in self._vocabulary:
-                self._vocabulary[word] = self._pointer_of_next_col_num
-                self._pointer_of_next_col_num += 1
+                self._vocabulary[word] = len(self._vocabulary)
             # 2
             counter[word] = counter.get(word, 0) + 1
         return counter
@@ -84,10 +81,16 @@ class CountVectorizer:
 if __name__ == '__main__':
     corpus = [
         'Crock Pot Pasta Never boil pasta again',
-        'Pasta Pomodoro Fresh ingredients Parmesan to taste',
-        'This tomato pasta could be even better with Parmesan.'
+        'Pasta Pomodoro Fresh ingredients Parmesan to taste'
     ]
     vectorizer = CountVectorizer()
     count_matrix = vectorizer.fit_transform(corpus)
-    print(vectorizer.get_feature_names())
-    print(count_matrix)
+    assert vectorizer.get_feature_names() == [
+        'crock', 'pot', 'pasta', 'never', 'boil', 'again', 'pomodoro',
+        'fresh', 'ingredients', 'parmesan', 'to', 'taste'
+        ]
+    assert count_matrix == [
+        [1, 1, 2, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1]
+        ]
+    print("tests paseed correctly")
