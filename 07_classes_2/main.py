@@ -1,5 +1,5 @@
 import keyword
-from typing import Any, Union
+from typing import Union
 import json
 
 
@@ -7,13 +7,6 @@ class Advert:
 
     def __init__(self, mapping: dict):
         self._parse_dict(mapping)
-
-    # def __setattr__(self, name: str, value: Any):
-    #     if name == 'price':
-    #         pass
-    #     if keyword.iskeyword(name):
-    #         name += '_'
-    #     self.__dict__[name] = value
 
     @property
     def price(self):
@@ -39,23 +32,25 @@ class Advert:
             if isinstance(value, dict):
                 value = Advert(value)
             if attr != 'price':
-                self.__setattr__(attr, value)
+                if keyword.iskeyword(attr):
+                    attr += '_'
+                self.__dict__[attr] = value
             else:
-                # self.price = value
-                pass
-
+                self.price = value
 
 
 if __name__ == '__main__':
     dog_str = """{
         "title": "Вельш-корги",
-        "price2": 1000,
+        "price": 1000,
         "class": "dogs"
     }"""
     dog = json.loads(dog_str)
     dog_ad = Advert(dog)
+    print(dog_ad.__dict__)
     dog_ad.price = -500
     print(dog_ad.__dict__)
     print(dog_ad.price)
+    print("\033[1;32;40m Bright Green  \n")
 
   
